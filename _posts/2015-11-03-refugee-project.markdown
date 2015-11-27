@@ -119,7 +119,7 @@ title: Telling the Refugee Story
         .startAngle(0)
         .endAngle(function(d) { return d.value * 2 * Math.PI;});
 
-   d3.csv("causes.cs", function(error, stories){
+   d3.csv("causes.csv", function(error, stories){
       d3.csv("refugee5.csv", function(error, data){
         var scale = d3.scale.linear()
               .domain([year,lastyear])
