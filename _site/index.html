@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<script src= '/js/jquery.min.js'></script>
+<html>
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>AvikaN</title>
+  <meta name="description" content="Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.
+">
+
+  <link rel="stylesheet" href="/css/main.css">
+  <link rel="canonical" href="http://yourdomain.com/">
+  <link rel="alternate" type="application/rss+xml" title="AvikaN" href="http://yourdomain.com/feed.xml">
+</head>
+
+  <link href='http://fonts.googleapis.com/css?family=Lato:400,700' rel='stylesheet' type='text/css'>
+<link href='https://fonts.googleapis.com/css?family=Raleway:500,400' rel='stylesheet' type='text/css'>
+<link href='https://fonts.googleapis.com/css?family=Josefin+Sans:400,700,600' rel='stylesheet' type='text/css'>
+<link href='https://fonts.googleapis.com/css?family=Dosis:400,600' rel='stylesheet' type='text/css'>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
+
+
+  <body>
+
+     <script src = "/js/nav.js"></script>
+ <script src = "/js/perlin.js"></script>
+ <script src="http://d3js.org/d3.v3.min.js"></script>
+
+  <div id="header-wrapper">
+
+    <div id="header">
+
+      <!-- Nav -->
+
+              <!-- Banner -->
+      <section id="banner">
+          <header>
+              <!--place the javascript title in here-->
+              <div id="project-title"></div>
+          </header>
+      </section>
+
+      <div id ="nav-wrapper">
+        <nav id="nav">
+          <!-- Nav -->
+							<ul>
+                  <li><a href="index.html">Home</a></li>
+                  <li ><a href="#about">About</a><li>
+                  <li ><a href="#work">Work</a> </li>
+                  <li ><a href="#contact">Contact</a></li>
+							</ul>
+
+        </nav>
+      </div>
+
+      </div>
+  </div>
+
+<script>
+var w = 400;
+var h = 200;
+var numelements = 400;
+var angle = 0.0;
+var angleVel = 0.05;
+var startAngle = 0;
+noise.seed(Math.random());
+
+//create an svg
+var svg = d3.select("div#project-title").append('svg');
+//set svg attributes
+svg.attr('width', w)
+   .attr('height', h);
+
+var x_pos = 0;
+var y_pos = 0;
+var pts = [];
+var yScale = d3.scale.linear().domain([-1, 1]).range([(h/2) + 50, (h/2) - 50]);
+
+for(var i = 0; i<numelements; i+=15)
+{
+  var x_position = i;
+  var y_position = yScale(Math.pow(Math.sin(angle),6));
+  var y_noise = yScale(noise.perlin2(angle,angle));
+  pts.push({x: x_position, y:y_noise});
+  angle+=angleVel;
+}
+
+//line function
+var line = d3.svg.line()
+    .x(function(d) { return d.x; })  //use to set x of point
+    .y(function(d) { return d.y; }) // set y of point
+    .interpolate("basis");
+
+// create a parent element the scene graph
+var group = svg.append('g').attr('transform', 'translate(30,10)');
+
+// append a <defs> element
+var defs = group.append('defs');
+
+//set path with points
+var path = defs.append('path')
+      .attr('id', 'our_path')     //href to this - our_path - vital, we will reference this ID later with the <use> element
+      .attr('d', line(pts))
+      .attr('fill', 'none')
+      .attr('stroke', '#4682B4');
+
+var txt = group.append('text')  // create a text element with some styles
+      //  .attr('dy', '0.33em') // =)
+      //  .attr('dy', '0.66em')
+      .style('text-anchor', 'end')
+      .style('font-size', '32px')
+      .style('font-family', 'Josefin Sans')
+      .style('font-weight', 400);
+
+
+var textPath = txt.append('textPath') // create a textPath element with a fill an actual text
+      .attr('startOffset', '48%')        //to text append textpath
+      .attr('xlink:href', '#our_path')    // from earlier, see defs.append('path')
+      .attr('fill', "#fa9581")
+      .attr('letter-spacing', '1.1px')
+      .text('Avika Narula');
+
+    // make the line the text is on visible by actually drawing it
+    // textPath doesn't draw the line, it makes sense
+var path_use = group.append("use")
+      .attr("xlink:href", "#our_path")
+      .style("stroke", "black")
+      .style("fill", "none")
+      .style('stroke-width', 4)
+      .style('stroke-opacity', 0.2);
+
+//update text path
+function loop_wave()
+{
+  //console.log("wave HelLo");
+  //textPath.transition()
+  //.each('end', loop_wave);
+
+   wave();
+}
+
+//loop_wave();
+wave();
+
+function wave()
+{
+  startAngle+=0.09;
+  angle = startAngle;
+  pts = [];
+  for(var i = 0; i<numelements; i+=10)
+  {
+    var x_position = i;
+    var y_position = yScale(Math.pow(Math.sin(angle),2));
+    var y_noise = yScale(noise.perlin2(angle,angle));
+    pts.push({x: x_position, y:y_noise});
+    angle+=angleVel;
+  }
+  //get a smooth transition to the new line
+  path.transition().attr('d', line(pts))
+      .ease("linear")
+      .each('end', wave);
+}
+</script>
+
+
+    <div class="page-content">
+      <div class="wrapper">
+        <section id="about">
+  <h1 class="section-title">About</h1>
+  <p class="index-content"> Hi, I'm Avika Narula! I am currently studying Computer Science at New York University.
+    I was born and raised in Bangkok, Thailand. I have been eduring the extremely long and painful plane rides from home because of
+    rewarding experience that I have gotten through out college.
+  </p>
+  <p class="index-content">I am making most of my time in school by taking classes in diverse fields of computer science. At the moment,
+    my interest is rooted to big bata science and data analysis, data visualization, and interactive computing.
+  </p>
+  <p class="index-content">During my internship this past summer, I worked on the frontend and backend development of a web application at SoftControl.Net, Ltd.
+  From my experience, I can honestly say that I enjoy backend development much more. CSS was the bane of my exsistence over the summer and still continues to be.
+  I have spent countless sleepless nights trying to figure out how to center elements while building this website. </p>
+
+  <p class="index-content">My interest in computer science led me to Tech@NYU, a student organization of hackers, designers, and builders.
+    I joined as a Design Days Coordinator, where I host workshops in collaboration with
+    accomplished speakers in fields such as creative technology, user research, design thinking, and digital product design. It's been a lot of fun. </p>
+
+  <p class = "index-content">For the time being, this is it. Thanks for reading this far.</p>
+</section>
+
+
+<section id="work">
+  <header>
+    <h1 class="section-title">Work</h1>
+  </header>
+  <p class="index-content"> Here are some of the projects that I have been working on. They stem from my fascination with d3.js, data, and visual coding languages.
+    </p>
+      
+      <a  href="/2015/11/03/refugee-project.html">
+          <!--<a href="#" class="image featured"><img src="/assets/images/pic02.jpg" alt="" /></a>-->
+         <header>
+            <h2 class=work-title>Telling the Refugee Story</h2>
+          </header>
+      </a>
+      
+      <a  href="/2015/11/03/d3-trial.html">
+          <!--<a href="#" class="image featured"><img src="/assets/images/pic02.jpg" alt="" /></a>-->
+         <header>
+            <h2 class=work-title>Hello, World!</h2>
+          </header>
+      </a>
+      
+      <a  href="/2015/10/30/first-post.html">
+          <!--<a href="#" class="image featured"><img src="/assets/images/pic02.jpg" alt="" /></a>-->
+         <header>
+            <h2 class=work-title>Regularity + Randomness = Something Beautiful</h2>
+          </header>
+      </a>
+      
+</section>
+
+
+<section id="contact">
+  <header>
+    <h1 class="section-title">Contact</h1>
+  </header>
+      <ul class="social">
+        <li> Reach out to me at <a href="mailto:avikanarula@nyu.edu">avikanarula@nyu.edu</a></li>
+      </ul>
+      <ul class="social">
+        <li><a class="fa fa-github" href="https://github.com/AvikaN"></a></li>
+      </ul>
+</section>
+
+      </div>
+    </div>
+
+    <footer class="site-footer">
+
+</footer>
+ 
+
+  </body>
+</html>

@@ -1,0 +1,139 @@
+ <script src = "/js/nav.js"></script>
+ <script src = "/js/perlin.js"></script>
+ <script src="http://d3js.org/d3.v3.min.js"></script>
+
+  <div id="header-wrapper">
+
+    <div id="header">
+
+      <!-- Nav -->
+
+              <!-- Banner -->
+      <section id="banner">
+          <header>
+              <!--place the javascript title in here-->
+              <div id="project-title"></div>
+          </header>
+      </section>
+
+      <div id ="nav-wrapper">
+        <nav id="nav">
+          <!-- Nav -->
+							<ul>
+                  <li><a href="index.html">Home</a></li>
+                  <li ><a href="#about">About</a><li>
+                  <li ><a href="#work">Work</a> </li>
+                  <li ><a href="#contact">Contact</a></li>
+							</ul>
+
+        </nav>
+      </div>
+
+      </div>
+  </div>
+
+<script>
+var w = 400;
+var h = 200;
+var numelements = 400;
+var angle = 0.0;
+var angleVel = 0.05;
+var startAngle = 0;
+noise.seed(Math.random());
+
+//create an svg
+var svg = d3.select("div#project-title").append('svg');
+//set svg attributes
+svg.attr('width', w)
+   .attr('height', h);
+
+var x_pos = 0;
+var y_pos = 0;
+var pts = [];
+var yScale = d3.scale.linear().domain([-1, 1]).range([(h/2) + 50, (h/2) - 50]);
+
+for(var i = 0; i<numelements; i+=15)
+{
+  var x_position = i;
+  var y_position = yScale(Math.pow(Math.sin(angle),6));
+  var y_noise = yScale(noise.perlin2(angle,angle));
+  pts.push({x: x_position, y:y_noise});
+  angle+=angleVel;
+}
+
+//line function
+var line = d3.svg.line()
+    .x(function(d) { return d.x; })  //use to set x of point
+    .y(function(d) { return d.y; }) // set y of point
+    .interpolate("basis");
+
+// create a parent element the scene graph
+var group = svg.append('g').attr('transform', 'translate(30,10)');
+
+// append a <defs> element
+var defs = group.append('defs');
+
+//set path with points
+var path = defs.append('path')
+      .attr('id', 'our_path')     //href to this - our_path - vital, we will reference this ID later with the <use> element
+      .attr('d', line(pts))
+      .attr('fill', 'none')
+      .attr('stroke', '#4682B4');
+
+var txt = group.append('text')  // create a text element with some styles
+      //  .attr('dy', '0.33em') // =)
+      //  .attr('dy', '0.66em')
+      .style('text-anchor', 'end')
+      .style('font-size', '32px')
+      .style('font-family', 'Josefin Sans')
+      .style('font-weight', 400);
+
+
+var textPath = txt.append('textPath') // create a textPath element with a fill an actual text
+      .attr('startOffset', '48%')        //to text append textpath
+      .attr('xlink:href', '#our_path')    // from earlier, see defs.append('path')
+      .attr('fill', "#fa9581")
+      .attr('letter-spacing', '1.1px')
+      .text('Avika Narula');
+
+    // make the line the text is on visible by actually drawing it
+    // textPath doesn't draw the line, it makes sense
+var path_use = group.append("use")
+      .attr("xlink:href", "#our_path")
+      .style("stroke", "black")
+      .style("fill", "none")
+      .style('stroke-width', 4)
+      .style('stroke-opacity', 0.2);
+
+//update text path
+function loop_wave()
+{
+  //console.log("wave HelLo");
+  //textPath.transition()
+  //.each('end', loop_wave);
+
+   wave();
+}
+
+//loop_wave();
+wave();
+
+function wave()
+{
+  startAngle+=0.09;
+  angle = startAngle;
+  pts = [];
+  for(var i = 0; i<numelements; i+=10)
+  {
+    var x_position = i;
+    var y_position = yScale(Math.pow(Math.sin(angle),2));
+    var y_noise = yScale(noise.perlin2(angle,angle));
+    pts.push({x: x_position, y:y_noise});
+    angle+=angleVel;
+  }
+  //get a smooth transition to the new line
+  path.transition().attr('d', line(pts))
+      .ease("linear")
+      .each('end', wave);
+}
+</script>

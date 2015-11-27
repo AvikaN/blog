@@ -1,0 +1,930 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>AvikaN</title>
+    <description>Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.
+</description>
+    <link>http://yourdomain.com/</link>
+    <atom:link href="http://yourdomain.com/feed.xml" rel="self" type="application/rss+xml"/>
+    <pubDate>Thu, 26 Nov 2015 15:54:43 -0500</pubDate>
+    <lastBuildDate>Thu, 26 Nov 2015 15:54:43 -0500</lastBuildDate>
+    <generator>Jekyll v3.0.0</generator>
+    
+      <item>
+        <title>Telling the Refugee Story</title>
+        <description>&lt;p&gt;  &amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp; Every day, all over the world, people flee their homes in fear of persecution because of their race, religion, political opinion and for many other inequitable reasons. Using data collected by the United Nations High Commissioner for Refugees (UNHCR), this visualization takes you through time from 1985 to 2013, showing the immense number of people who are forced out of their homes every year. To browse through history, click on the timeline bubble. &lt;p&gt;
+&lt;p&gt;&lt;/p&gt;
+&lt;div id=&quot;project&quot;&gt;&lt;/div&gt;
+&lt;p&gt;&lt;/p&gt;
+&lt;script type=&quot;text/javascript&quot; src=&quot;http://mbostock.github.com/d3/d3.js&quot;&gt;&lt;/script&gt;
+
+&lt;style&gt;
+
+	#project{
+		position: relative;
+		left: -130px;
+	}
+
+    .year {
+      font-family: &#39;Courier New&#39;, Courier, &#39;Lucida Sans Typewriter&#39;, &#39;Lucida Typewriter&#39;, monospace;
+      font-size: 25px;
+      font-weight: normal;
+      fill:#707070 ;
+      text-anchor:middle;
+    }
+    .totalrefugee{
+      font-family:&#39;Courier New&#39;, Courier, &#39;Lucida Sans Typewriter&#39;, &#39;Lucida Typewriter&#39;, monospace;
+      font-size: 15px;
+      font-weight: normal;
+      fill:#707070;
+      text-anchor:middle;
+    }
+    .continentname{
+      font-family:&quot;Lucida Sans Unicode&quot;, &quot;Lucida Grande&quot;, sans-serif;
+      font-size: 13px;
+      font-weight: normal;
+      fill:#707070;
+      text-anchor: middle;
+    }
+    path{
+      fill-rule: evenodd;
+      fill:#888888;
+      fill-opacity: 0.75;
+      stroke:#C0C0C0;
+      stroke-width: 2.35px;
+    }
+    #tooltip {
+      position: absolute;
+      min-width: 170px;
+      height: auto;
+      padding: 10px;
+      background-color:rgba(0,0,0,0.7);
+      border: solid white 2px;
+      -webkit-border-radius: 4px;
+      -moz-border-radius: 4px;
+      border-radius: 4px;
+      pointer-events: none;
+    }
+    #tooltip.hidden {
+      display: none;
+    }
+    #tooltip p {
+      margin:0;
+      font-family: &quot;Trebuchet MS&quot;, Helvetica, sans-serif;
+      padding:3px;
+      font-size: 13.5px;
+      color: white;
+    }
+   .timelinetext{
+      font-family: &quot;Lucida Sans Unicode&quot;, &quot;Lucida Grande&quot;, sans-serif;
+      font-size: 15px;
+      font-weight: bold;
+      fill:#303030;
+      text-anchor:middle;
+      cursor: pointer;
+   }
+ &lt;/style&gt;
+
+&lt;script src=&quot;http://d3js.org/d3.v3.min.js&quot;&gt;&lt;/script&gt;
+
+&lt;div id=&quot;tooltip&quot; class=&quot;hidden&quot;&gt;
+    &lt;p&gt;&lt;span id=&quot;story&quot;&gt;&lt;/span&gt;&lt;/p&gt;
+    &lt;p&gt;&lt;span id=&quot;name&quot;&gt;&lt;/span&gt;&lt;/p&gt;
+    &lt;p&gt;Refugees:&lt;span id=&quot;people&quot;&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;/div&gt;
+
+&lt;script type=&quot;text/javascript&quot;&gt;
+   var width = 1000,
+        height = 820,
+        clusterPadding=30,
+        maxRadius=0,
+        perpixel=10,
+        minpopulation=3000,
+        minRadius=Math.sqrt(minpopulation/Math.PI)/perpixel,
+        region=23,
+        continent=8,
+        year=1985,
+        firstyear=1985,
+        lastyear=2013,
+        yeardiff=lastyear-firstyear+1,
+        minRefugee = 8661893,              //hardcode min and max
+        maxRefugee = 17819061;
+
+    var color = d3.scale.category20b()
+        .domain(d3.range(region));
+
+    var opacityscale=d3.scale.linear().domain([0,1]).range([0.25,1]).clamp([true]);
+    var timelineScale = d3.scale.linear().domain([minRefugee, maxRefugee]).range([80,120]);
+
+    var svg = d3.select(&quot;div#project&quot;).append(&quot;svg&quot;)
+    	.attr(&quot;class&quot;, &quot;canvas&quot;)
+        .attr(&quot;width&quot;, width)
+        .attr(&quot;height&quot;, height)
+        .append(&quot;g&quot;);
+
+    var arc = d3.svg.arc()
+        .innerRadius(90)
+        .outerRadius(110)
+        .startAngle(0)
+        .endAngle(function(d) { return d.value * 2 * Math.PI;});
+
+   d3.csv(&quot;/causes.csv&quot;, function(error, stories){
+      d3.csv(&quot;/refugee5.csv&quot;, function(error, data){
+        var scale = d3.scale.linear()
+              .domain([year,lastyear])
+              .range([0,1]);
+
+        var tempnodes=[],
+            clusters=new Array(region),
+            continentclusters= new Array(1);
+
+        var yearlist=[],
+            halftotal=(lastyear-firstyear)/2,
+            halftotalyear=halftotal+firstyear;
+
+        timeindex=0;
+        for(a=firstyear;a&lt;=lastyear;a++){
+          if(a&lt;=halftotalyear){yearlist.push({data:a,half:0,index:timeindex})}
+          else{yearlist.push({data:a,half:1,index:timeindex-halftotal-0.5})}
+          timeindex++;
+        }
+
+        var yeartotal=[];
+        for(var j=year; j&lt;=lastyear; j++){
+            yeartotal[j]=data[data.length-1][j];
+        }
+
+        //initialize clock node
+        clockNode={cluster:0,radius:timelineScale(yeartotal[firstyear]),clock:1,padding:40,name:1, prevr:0,skip:0,tempradius:timelineScale(yeartotal[firstyear]),x:width/2, y:height/3,color:&quot;#C0C0C0&quot;};
+        tempnodes.push(clockNode)
+        clusters[0]=clockNode;
+
+        //build nodes
+        for (var j=0; j&lt;data.length-1; j++){
+
+          var r= Math.sqrt(data[j][year]/Math.PI)/perpixel;
+          if(maxRadius&lt;r){maxRadius=r;}
+          var pad= 5+Math.ceil(Math.random()*5);
+            if(r&lt;minRadius){
+              r=0,pad=0;
+            }
+          var name=data[j][&quot;name&quot;];
+          var clus=data[j][&quot;cluster&quot;];
+          var continentID=data[j][&quot;continentID&quot;];
+          tempnodes[name]={cluster:clus, radius:r,people:data[j][year],padding:pad,name:name, region:data[j][&quot;region&quot;],
+                           prevr:0,skip:1,tempradius:r,continentID:continentID,color:data[j][&quot;clustercolor&quot;],country:1,topfive:0, countryIndex: j,
+                           x: Math.cos((continentID / continent) * 2 * Math.PI) * 200 + width/2 + Math.random(),
+                           y: Math.sin((continentID / continent) * 2 * Math.PI) * 200 + height/3 + Math.random()
+          };
+          if (!clusters[clus] || (r &gt; clusters[clus].radius)) clusters[clus] = tempnodes[name];
+          if(!continentclusters[continentID]){
+              var conname=data[j][&quot;continent&quot;]+&quot;C&quot;;
+              var conobj={cluster:continentID, name:data[j][&quot;continent&quot;], padding:pad,radius:38, prevr:0,skip:0,tempradius:38,continent:1,color:data[j][&quot;continentcolor&quot;],continentID:continentID,
+                          x: Math.cos((continentID / continent) * 2 * Math.PI) * 200 + width/2 + Math.random(),
+                          y: Math.sin((continentID / continent) * 2 * Math.PI) * 200 + height/3+ Math.random()
+              };
+              continentclusters[continentID]=conobj;
+              tempnodes[conname]=conobj;
+          }
+        }
+
+        //initialize force
+        var nodes=d3.values(tempnodes);
+
+        var force=d3.layout.force()
+          .nodes(nodes)
+          .size([width, height])
+          .gravity(0)
+          .charge(0)
+          .on(&quot;tick&quot;, run)
+          .start();
+
+        //parse and organize data
+        var nodesvalue=d3.values(tempnodes),
+            sortednodes=nodesvalue.sort(function(a,b){
+               if(a.country &amp;&amp; b.country){return b.tempradius-a.tempradius}
+             }),
+            topfive=sortednodes.slice(1,6);
+
+        for(value in topfive){
+              var name=topfive[value].name;
+              tempnodes[name].topfive=1;
+        }
+
+        //initalize main circles
+        svg.selectAll(&quot;.maincircles&quot;)
+          .data(nodes)
+          .enter().append(&quot;circle&quot;)
+          .attr(&quot;fill&quot;, function(d){
+            if(d.topfive){return &quot;rgba(160,160,160,1)&quot;}
+            else{return &quot;rgba(160,160,160,0)&quot; }
+          })
+          .attr(&quot;stroke&quot;, function(d) {
+            return d.color;
+          })
+          .attr(&quot;opacity&quot;,1)
+          /*
+          .attr(&quot;stroke-dasharray&quot;, function(d){
+             if(d.countryIndex!= undefined){
+                  if(stories[d.countryIndex][year] != &quot;&quot;){
+                    return &quot;5,5&quot;;
+                  }
+             }
+          })
+		 */
+          .attr(&quot;stroke-width&quot;,3)
+          .attr(&quot;class&quot;,function(d){
+            if(d.clock){return &quot;clock maincircles&quot;}
+            else if(d.continent){return &quot;continent maincircles&quot;}
+            else{return &quot;countries maincircles&quot;}
+          })
+          .call(force.drag);
+
+          var node = svg.selectAll(&quot;.maincircles&quot;);
+
+          node.transition()
+          .duration(2000)
+          .attrTween(&quot;r&quot;, function(d) {
+            var i = d3.interpolate(d.prevr, d.radius);
+            return function(t) { return d.radius = i(t); };
+          });
+
+        //initialize i
+        i = 0;
+
+        //texts
+        fields = [
+            {location: 0.7, name: &quot;year&quot;, value: scale(year), size: lastyear, text:year, totalrefugee:yeartotal[year]}
+        ];
+
+        var continentname=d3.values(continentclusters);
+
+        svg.append(&quot;text&quot;).data(fields).attr(&quot;class&quot;,&quot;year&quot;);
+        svg.append(&quot;text&quot;).data(fields).attr(&quot;class&quot;,&quot;totalrefugee&quot;);
+
+        svg.select(&quot;.year&quot;)
+                .text(function(d){
+                  return d.text;
+                });
+
+        svg.select(&quot;.totalrefugee&quot;)
+              .text(function(d){
+                return Number(d.totalrefugee).toLocaleString(&#39;en&#39;);
+              });
+
+        svg.selectAll(&quot;.continentname&quot;).data(continentname)
+                      .enter().append(&quot;text&quot;)
+                      .attr(&quot;class&quot;,&quot;continentname&quot;)
+                      .attr(&quot;id&quot;, function(d){
+                        return &quot;continent&quot;+d.cluster;
+                      })      
+                     .text(function(d){
+                        return d.name;
+                      });
+
+        d3.selectAll(&quot;.clock,.timelinetext&quot;)
+          .on(&quot;click&quot;, function(d){
+
+              //only needs to be done the first time actually
+              for(value in tempnodes){
+                if(tempnodes[value].continent || tempnodes[value].clock) tempnodes[value].prevr=tempnodes[value].tempradius;
+              }
+
+              var yearindex= ++i % (yeardiff);
+              if(d.clock){
+                year=firstyear+yearindex;
+              }
+              else{
+                year=d.data;
+                i=year-firstyear;
+              }
+
+      
+              //update nodes
+              for (var j=0; j&lt;data.length-1; j++){
+                    var r= Math.sqrt(data[j][year]/Math.PI)/perpixel,
+                        name=data[j][&quot;name&quot;];
+                        group=data[j][&quot;cluster&quot;];
+                        if(tempnodes[name]){
+                          var previousr=tempnodes[name].prevr;
+                          tempnodes[name].prevr=tempnodes[name].radius;
+                          var prepeople=tempnodes[name].people;
+                          tempnodes[name].people=data[j][year];
+                          tempnodes[name].topfive=0;
+                          if(r&lt;minRadius){
+                            tempnodes[name].tempradius=0;
+                            tempnodes[name].pad=0;
+                          }
+                          else{
+                            if(prepeople&gt;0){
+                              tempnodes[name].difference=(tempnodes[name].people-prepeople)/prepeople;
+                            }
+                            tempnodes[name].tempradius=r;
+                            if(tempnodes[name].prevr&lt;minRadius){
+                                tempnodes[name].difference=&quot;new&quot;;
+                                tempnodes[name].padding=5+Math.ceil(Math.random()*5); //give new padding if previous was less than 0
+                            }
+                          }
+                          tempnodes[name].skip=0;
+                        }
+              }
+
+              /*update clock node*/
+              clockNode.prevr = clockNode.radius; 
+              clockNode.tempradius = timelineScale(yeartotal[year]);
+
+            /*update for transition*/
+            for(value in tempnodes){
+                if(tempnodes[value].skip){
+                  tempnodes[value].prevr=tempnodes[value].tempradius;
+                  tempnodes[value].tempradius=0;
+                }
+                if(!tempnodes[value].clock &amp;&amp; !tempnodes[value].continent){
+                    tempnodes[value].skip=1;
+               }
+            }
+
+            var nodesvalue=d3.values(tempnodes),
+                sortednodes=nodesvalue.sort(function(a,b){
+                  if(a.country &amp;&amp; b.country){return b.tempradius-a.tempradius}
+                }),
+                topfive=sortednodes.slice(1,6);
+
+            for(value in topfive){
+              var name=topfive[value].name;
+              tempnodes[name].topfive=1;
+            }
+
+            /*update countries*/
+            node=svg.selectAll(&quot;.maincircles&quot;);
+
+            node.transition()
+                .duration(2000)
+                .attr(&quot;fill&quot;,function(d){
+                  if(d.topfive){return &quot;rgba(160,160,160,1)&quot;}
+                  else{return &quot;rgba(160,160,160,0)&quot; }
+                })
+                .attr(&quot;opacity&quot;,function(d){
+                	/*
+                  if(d.country){
+                    if(d.difference !== undefined || d.difference !== null){
+                      if(d.difference==&quot;new&quot;)return 1;
+                      return opacityscale(Math.abs(d.difference));
+                    }
+                    else{return 0}
+                  }
+                  else{return 1}
+                  	*/
+                  return 1;
+                })
+                /*
+                .attr(&quot;stroke-dasharray&quot;, function(d){
+             		if(d.countryIndex!= undefined){
+                  		if(stories[d.countryIndex][year] != &quot;&quot;){
+                    		return &quot;5,5&quot;;
+                  	}
+             	  }
+          		}) */
+                .attrTween(&quot;r&quot;, function(d){
+                  var i = d3.interpolate(d.prevr, d.tempradius);
+                  return function(t) { return d.radius = i(t); };
+                });
+
+            //paths
+            var now = scale(year);
+            fields[0].previous = fields[0].value; fields[0].value = now; fields[0].text = year; fields[0].totalrefugee=yeartotal[year];
+
+            var path = svg.selectAll(&quot;path&quot;)
+              .data(fields.filter(function(d) { return d.value; }),
+                                  function(d) { return d.name; });
+
+            svg.select(&quot;.year&quot;)
+              .text(function(d){
+                return d.text;
+              });
+
+            svg.select(&quot;.totalrefugee&quot;)
+              .text(function(d){
+                return Number(d.totalrefugee).toLocaleString(&#39;en&#39;);
+              });
+
+            path.enter().append(&quot;path&quot;)
+                .transition()
+                  .ease(&quot;elastic&quot;)
+                  .duration(1000)
+                  .attrTween(&quot;d&quot;, arcTween);
+
+            path.transition()
+                  .ease(&quot;elastic&quot;)
+                  .duration(1000)
+                  .attrTween(&quot;d&quot;, arcTween);
+
+             path.exit().transition()
+                  .ease(&quot;elastic&quot;)
+                  .duration(1000)
+                  .attrTween(&quot;d&quot;, arcTween)
+                  .remove();
+
+            //update location of path
+            node.each(updatePath());
+            force.alpha(0.1);
+        });
+
+        svg.selectAll(&quot;.countries&quot;)
+            .on(&quot;mouseover&quot;,function(d){
+              if(d.tempradius&gt;minRadius){
+
+									//get div location
+									var leftDiv = $(&#39;#project&#39;).position().left;
+									var topDiv = $(&#39;#project&#39;).position().top;
+
+									var xPos= d.px + leftDiv; // displacement
+									var yPos= d.py + topDiv ; // displacement
+
+                  d3.select(&quot;#tooltip&quot;)
+                      .style(&quot;left&quot;, xPos + &quot;px&quot;)
+                      .style(&quot;top&quot;, yPos + &quot;px&quot;)
+                      .select(&quot;#name&quot;)
+                      .text(d.name+&quot;, &quot;+d.region);
+
+                  d3.select(&#39;#tooltip&#39;)
+                      .select(&#39;#story&#39;)
+                      .text(function(){
+                         return stories[d.countryIndex][year];
+                  	  });
+
+                  d3.select(&#39;#tooltip&#39;)
+                      .select(&quot;#people&quot;)
+                      .text(Number(d.people).toLocaleString(&#39;en&#39;));
+
+                  d3.select(&#39;#tooltip&#39;)
+                      .select(&#39;#change&#39;)
+                      .text(function(){
+                        if(d.difference !== undefined &amp;&amp; d.difference !== null &amp;&amp; d.difference !== NaN){
+                        	if(year == firstyear) return null;
+                            if(d.difference == &quot;new&quot;)return &quot;Population last year &lt; &quot; + minpopulation;
+
+                            var rounded=Math.floor((d.difference*100));
+                            if(rounded&gt;0){return &quot;Population change: &quot; + rounded + &quot;% increase&quot;}
+                            else if(rounded&lt;0){return &quot;Population change: &quot; + Math.abs(rounded)+&quot;% decrease&quot;}
+                            else{return &quot;Population change: none&quot;}
+                        }
+                      });
+
+                  d3.select(&quot;#tooltip&quot;).classed(&quot;hidden&quot;, false);
+              }
+            })
+            .on(&quot;mouseout&quot;, function() {
+                  d3.select(&quot;#tooltip&quot;).classed(&quot;hidden&quot;, true);
+            });
+
+        function run(e) {
+        node
+            .each(cluster(11 * e.alpha * e.alpha))
+            .each(clockcluster(6 * e.alpha * e.alpha))
+            .each(continentcluster(1 * e.alpha * e.alpha))
+            .each(collide(.1))
+            .each(updateText())
+            .each(updatePath())
+            .attr(&quot;cx&quot;, function(d) { return d.x; })
+            .attr(&quot;cy&quot;, function(d) { return d.y; });
+        }
+
+        function updateText(){
+            return function(d){
+              if(d.clock){
+                svg.select(&quot;.year&quot;) //one text
+                    .attr(&quot;x&quot;, d.x)
+                    .attr(&quot;y&quot;, d.y);
+
+                svg.select(&quot;.totalrefugee&quot;)
+                    .attr(&quot;x&quot;, d.x)
+                    .attr(&quot;y&quot;,d.y+20);
+              }
+              if(d.continent){
+                svg.select(&quot;#continent&quot;+(d.cluster))
+                    .attr(&quot;x&quot;,d.x)
+                    .attr(&quot;y&quot;,d.y+5);
+              }
+            }
+        }
+
+        function updatePath(){
+            return function(d){
+              if(d.clock){
+                svg.select(&quot;path&quot;)// one path
+                    .attr(&quot;transform&quot;, &quot;translate(&quot;+d.x+&quot;,&quot;+d.y+&quot;)&quot;);
+              }
+
+            }
+        }
+
+        function cluster(alpha) {
+          return function(d) {
+            var cluster=clusters[d.cluster];  
+            if (cluster === d || d.continent) return;
+            var x = d.x - cluster.x,  
+                y = d.y - cluster.y,  
+                l = Math.sqrt(x * x + y * y),
+                r = d.radius + cluster.radius;  
+            if (l != r) {
+              l = (l - r) / l * alpha;  
+              d.x -= x *= l;
+              d.y -= y *= l;
+              cluster.x += x;
+              cluster.y += y;  
+            }
+          };
+        }
+
+        function clockcluster(alpha){
+          return function(d){
+            var cluster=continentclusters[d.cluster];
+            var clock=clusters[0];
+            if(cluster!==d || cluster===clock) return;
+            var x = d.x - clock.x,
+                y = d.y - clock.y,
+                l = Math.sqrt(x * x + y * y),
+                r = d.radius + clock.radius;
+            if(l != r){
+              l=(l - r) / l * alpha;
+              d.x -= x *= l;
+              d.y -= y *= l;
+              clock.x+=x;
+              clock.y+=y;
+            }
+          }
+
+        }
+
+        function continentcluster(alpha){
+          return function(d){
+            if(d.clock || d.continent) return;
+            var continent=continentclusters[d.continentID];
+           // console.log(continent);
+           // console.log(d);
+            var x = d.x-continent.x,
+                y = d.y-continent.y,
+                l = Math.sqrt(x * x + y * y),
+                r = d.radius + continent.radius;
+            if(l != r){
+              l=(l - r) / l * alpha;
+              d.x -= x *= l;
+              d.y -= y *= l;
+              continent.x+=x;
+              continent.y+=y;
+            }
+          }
+        }
+
+        // Resolves collisions between d and all other circles.
+        function collide(alpha) {
+          var quadtree = d3.geom.quadtree(nodes);
+          return function(d) {
+            var r = d.radius + maxRadius + Math.max(d.padding, clusterPadding),
+                nx1 = d.x - r,
+                nx2 = d.x + r,
+                ny1 = d.y - r,
+                ny2 = d.y + r;
+            quadtree.visit(function(quad, x1, y1, x2, y2) {
+              if (quad.point &amp;&amp; (quad.point !== d)) {
+                var x = d.x - quad.point.x,
+                    y = d.y - quad.point.y,
+                    l = Math.sqrt(x * x + y * y),
+                    finalpadding=0,
+                    r=0;
+                    if((d.clock &amp;&amp; quad.point.continent)|| (d.clock &amp;&amp; quad.point.country)){finalpadding=d.padding}
+                    else if((d.continent &amp;&amp; quad.point.clock) || (d.country &amp;&amp; quad.point.clock)){finalpadding=quad.point.padding}
+                    else if(d.continentID === quad.point.continentID){finalpadding=d.padding}
+                    else{finalpadding=(d.cluster === quad.point.cluster ? d.padding : clusterPadding)}
+                    r = d.radius + quad.point.radius + finalpadding;
+                if (l &lt; r) {
+                  l = (l - r) / l * alpha;
+                  d.x -= x *= l;
+                  d.y -= y *= l;
+                  quad.point.x += x;
+                  quad.point.y += y;
+                }
+              }
+              return x1 &gt; nx2 || x2 &lt; nx1 || y1 &gt; ny2 || y2 &lt; ny1;
+            });
+          };
+        }
+      });
+   });
+
+	function arcTween(b) {
+        var i = d3.interpolate({value: b.previous}, b);
+        return function(t) {
+            return arc(i(t));
+        };
+    }
+
+&lt;/script&gt;
+&lt;/p&gt;&lt;/p&gt;
+</description>
+        <pubDate>Tue, 03 Nov 2015 00:00:00 -0500</pubDate>
+        <link>http://yourdomain.com/2015/11/03/refugee-project.html</link>
+        <guid isPermaLink="true">http://yourdomain.com/2015/11/03/refugee-project.html</guid>
+        
+        
+      </item>
+    
+      <item>
+        <title>Hello, World!</title>
+        <description>&lt;p&gt; &amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp; Inspired by &lt;a href=&quot;https://xkcd.com/1071/&quot;&gt; XKCD&#39;s Exoplanet comic&lt;/a&gt;, here is a visualization of all the exoplanets and their stars to scale. The pink blob is our sun, and in it is a tiny speck that is our planet. You can spot earth if you zoom in and look very closely for a tiny black dot.&lt;/p&gt;
+&lt;div id=&quot;project-2&quot;&gt;&lt;/div&gt;
+&lt;script src=&quot;http://d3js.org/d3.v3.min.js&quot;&gt;&lt;/script&gt;
+
+&lt;style&gt;
+  #project-2{
+    position: relative;
+    left: -60px;
+    top: -40px;
+  }
+&lt;/style&gt;
+
+&lt;script type=&quot;text/javascript&quot;&gt;
+
+    var size = 800;
+    var m = 1;
+
+    var padding = 0.50;
+    var clusterPadding = 4;
+    var starCluster = [];
+    var maxRadius = 1;
+
+    // get distance from star, see if you can sort if according to that
+    // fix the colors of the planets
+
+    var svg = d3.select(&quot;div#project-2&quot;).append(&quot;svg&quot;).attr(&quot;width&quot;,size).attr(&quot;height&quot;,size);
+
+    var colorstar = d3.scale.quantize().range([&#39;rgb(77,0,75)&#39;,&#39;rgb(129,15,124)&#39;,&#39;rgb(136,65,157)&#39;,&#39;rgb(140,107,177)&#39;,&#39;rgb(140,150,198)&#39;]);
+
+    var starpack = d3.layout.pack()
+          .sort(null)  // sort data later according to distance
+          .size([size,size])
+          .value(function(d) {return d.radius })
+          .padding(clusterPadding);
+
+
+    /*----Star----*/
+    d3.csv(&quot;/extrastars.csv&quot;, type, function(error, dat){
+
+      // create empty array
+      var planet = [];
+
+      for(var i = 0; i&lt; dat.length; i++){
+         var thisP = dat[i];
+         var c = thisP.cluster;
+         var r = thisP.pradius / m * -Math.log(0.85) * maxRadius;
+         planet.push({planet: thisP.planet, radius: r , cluster: thisP.cluster, star: thisP.star, realr: thisP.pradius, distance: thisP.distance});
+      }
+
+      /*
+      dat.forEach(function(entry,i){
+        var thisP = dat[i]; // get data at i
+        var c = thisP.cluster;
+        var r = thisP.pradius / m * -Math.log(0.85) * maxRadius;
+        planet.push({planet: thisP.planet, radius: r , cluster: thisP.cluster, star: thisP.star, realr: thisP.pradius, distance: thisP.distance});
+      }); */
+
+      var tempStar = {};
+
+      for(var i = 0; i &lt; dat.length; i++){
+          var thisS = dat[i];
+          if(!tempStar[thisS.star]){
+            // store an object
+            tempStar[thisS.star] = {star: thisS.star, radius: thisS.sradius, luminosity: thisS.luminosity, distance: thisS.distance, cluster: thisS.cluster};
+          }
+      }
+
+      /*
+      dat.forEach(function(entry,i){
+        // get data at i
+        var thisS = dat[i];
+        // if this associate array has not yet been defined
+        if(!tempStar[thisS.star]){
+          // store an object
+          tempStar[thisS.star] = {star: thisS.star, radius: thisS.sradius, luminosity: thisS.luminosity, distance: thisS.distance, cluster: thisS.cluster};
+        }
+      }); */
+
+
+      // define array
+      var star = [];
+      for(var key in tempStar){
+        star.push(tempStar[key]);
+      }
+
+
+      star.sort(function(a,b){
+        return isFinite(a.distance) || isFinite(b.distance)
+        ? a.distance - b.distance
+        : 0;
+      });
+
+      var snode = starpack.nodes({children: star}).slice(1);
+
+      colorstar.domain(d3.extent(star, function(d){return d.luminosity;}));
+
+      var starNode = svg.selectAll(&quot;.star&quot;)
+        .data(snode) // so confusing
+        .enter().append(&quot;circle&quot;)
+        .attr(&quot;r&quot;, function(d) {
+          starCluster[d.cluster] = d;   // will this work?
+          return d.r - 0.5;
+        })
+        .attr(&quot;cx&quot;, function(d){return d.x;})
+        .attr(&quot;cy&quot;, function(d){return d.y;})
+        .attr(&quot;fill&quot;, function(d){
+          if(d.star == &quot;Sun&quot;){return &#39;#F08080&#39;;}
+          //return colorstar(d.luminosity);
+          //return &quot;rgb(248,114,23)&quot;
+          return &quot;#B0C4DE&quot;;
+        })
+        .style(&quot;opacity&quot;, 1)
+        .attr(&quot;stroke&quot;, &quot;grey&quot;)
+        .attr(&quot;stroke-width&quot;, &quot;1.45&quot;)
+        .attr(&quot;class&quot;, &quot;star&quot;);
+
+
+      var force = d3.layout.force()
+              .nodes(planet)
+              .size([size, size])
+              .gravity(0)
+              .charge(0)
+              .on(&quot;tick&quot;, tick)
+              .start();
+
+
+        var planetNode = svg.selectAll(&quot;.planet&quot;)
+            .data(planet)
+            .enter().append(&quot;circle&quot;)
+            .call(force.drag)  
+            .attr(&quot;fill&quot;, function(d){
+              if(d.planet == &quot;Earth&quot;){
+                return &quot;black&quot;;
+              } /*
+              else if(d.star == &quot;Sun&quot;) {
+                return &quot;orange&quot;;
+              } */
+              return &quot;#ffffff&quot;;//&quot;#FFFF00&quot;; //&quot;#ffffff&quot;; //&quot;rgb(248,114,23)&quot;;//&quot;rgb(235,225,120)&quot;; //rgb(83,216,235) //
+            })
+            .attr(&quot;class&quot;, &quot;planet&quot;);
+
+
+        planetNode.sort(function(a,b){
+        return isFinite(a.distance) || isFinite(b.distance)
+          ? a.distance - b.distance
+          : 0;
+        });
+
+
+
+        planetNode.transition()
+          .duration(1000)
+          .delay(function(d,i) {return i * 17;})
+          .attrTween(&quot;r&quot;, function(d){
+              var i = d3.interpolate(0, d.radius);
+              return function(t) {return d.radius = i(t);};     
+          });
+
+
+       d3.selectAll(&quot;.planet&quot;)
+            .on(&quot;click&quot;, function(d){
+               console.log(d);
+            });
+
+
+
+      function tick(e){
+        // call tick on the planets
+        planetNode
+          .each(cluster(10 * e.alpha * e.alpha))
+          .each(collide(0.2))
+           // if you don&#39;t have this they become one cluster
+           // collision is not happening correctly
+          .attr(&quot;cx&quot;, function(d) {
+            return d.x;
+          })
+            .attr(&quot;cy&quot;, function(d) {
+              return d.y;
+            });
+      }
+
+
+
+      function cluster(alpha){
+
+        return function(d){
+          // everything else should work fine
+          // this should return a star obj
+          var cluster = starCluster[d.cluster];
+          var x = d.x - cluster.x,
+            y = d.y - cluster.y,
+            l = Math.sqrt(x*x + y*y),
+            a = 0.5,
+            r = d.radius + cluster.radius;
+          if(l != r){
+            l = (l - r) / l * alpha;  
+            d.x -= x *= l;
+            d.y -= y *= l;
+          }
+
+        };
+      }
+
+      function collide(alpha){
+      // stars is not included as part of the collision detection
+
+      var quadtree = d3.geom.quadtree(planet);
+        return function(d) {
+        //  console.log(&quot;d.x: &quot; + d.x);
+        //  console.log(&quot;d.y: &quot; + d.y);
+          var r = d.radius + maxRadius + Math.max(padding, clusterPadding),
+              nx1 = d.x - r,
+              nx2 = d.x + r,
+              ny1 = d.y - r,
+              ny2 = d.y + r;
+
+          quadtree.visit(function(quad, x1, y1, x2, y2) {
+            if (quad.point &amp;&amp; (quad.point !== d)) {
+              var x = d.x - quad.point.x,
+                  y = d.y - quad.point.y,
+                  l = Math.sqrt(x * x + y * y),
+                  r = d.radius + quad.point.radius + (d.cluster === quad.point.cluster ? padding : clusterPadding);
+              if (l &lt; r) {
+                l = (l - r) / l * alpha;
+                d.x -= x *= l;
+                d.y -= y *= l;
+                quad.point.x += x;
+                quad.point.y += y;
+              }
+            }
+            return x1 &gt; nx2 || x2 &lt; nx1 || y1 &gt; ny2 || y2 &lt; ny1;
+          });
+        };
+      }
+
+    });
+
+    /*Define type */
+    function type(d){
+      d.radius = +d.radius;
+      // if distance is defined, else it should be infinity
+      d.distance = d.distance ? +d.distance : Infinity;
+      return d;
+    }
+
+&lt;/script&gt;
+
+</description>
+        <pubDate>Tue, 03 Nov 2015 00:00:00 -0500</pubDate>
+        <link>http://yourdomain.com/2015/11/03/d3-trial.html</link>
+        <guid isPermaLink="true">http://yourdomain.com/2015/11/03/d3-trial.html</guid>
+        
+        
+      </item>
+    
+      <item>
+        <title>Regularity + Randomness = Something Beautiful</title>
+        <description>&lt;p&gt;
+	&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp; I based this project on the two opposing concepts of regularity and randomness. The randomness is composed of generative art and the periodic repetition comes from heartbeat. In these sketches there is randomness in movement, size, and color of the objects. Using the PulseSensor for the Arduino, these sketches recieve real-time pulse input. The pulse is then visualized through generative art.  
+&lt;/p&gt;
+&lt;p&gt; &lt;/p&gt;
+&lt;p&gt;  &amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;  This first sketch was inspired by Matt Pearson&#39;s sketch in his book, Generative Art.&lt;/p&gt;
+&lt;div class=&quot;pulse_sensor_viz&quot;&gt; 
+        &lt;iframe src=&quot;https://player.vimeo.com/video/143106863&quot; width=&quot;600&quot; height=&quot;400&quot; frameborder=&quot;0&quot; webkitallowfullscreen=&quot;&quot; mozallowfullscreen=&quot;&quot; allowfullscreen=&quot;&quot;&gt;&lt;/iframe&gt; 
+&lt;/div&gt;
+
+&lt;p&gt; &lt;/p&gt;
+
+&lt;div class=&quot;pulse_sensor_viz&quot;&gt;
+        &lt;iframe src=&quot;https://player.vimeo.com/video/143106830&quot; width=&quot;600&quot; height=&quot;424&quot; frameborder=&quot;0&quot; webkitallowfullscreen=&quot;&quot; mozallowfullscreen=&quot;&quot; allowfullscreen=&quot;&quot;&gt;&lt;/iframe&gt;
+&lt;/div&gt;
+&lt;p&gt; &lt;/p&gt;
+&lt;p&gt;I then thought projecting my heartbeat onto a 3D surface would create a very surreal experience. I used wooden cubes to create atypical surfaces and used projection mapping to project the sketches onto these surfaces. &lt;/p&gt;
+
+&lt;div class=&quot;projection-map&quot;&gt; &lt;img align=&quot;center&quot; src=&quot;/images/image-2.jpg&quot; alt=&quot;Projection Mapping - 1&quot; /&gt;
+&lt;img align=&quot;middle&quot; src=&quot;/images/image-3.jpg&quot; alt=&quot;Projection Mapping - 2&quot; /&gt; &lt;div&gt;
+
+&lt;p&gt; &lt;/p&gt;
+
+&lt;div class=&quot;pulse_sensor_viz&quot;&gt;
+
+	&lt;iframe src=&quot;https://player.vimeo.com/video/146968526&quot; width=&quot;600&quot; height=&quot;424&quot; frameborder=&quot;0&quot; webkitallowfullscreen=&quot;&quot; mozallowfullscreen=&quot;&quot; allowfullscreen=&quot;&quot;&gt;&lt;/iframe&gt;
+
+&lt;/div&gt;
+&lt;p&gt; &lt;/p&gt;
+&lt;/div&gt;&lt;/div&gt;
+</description>
+        <pubDate>Fri, 30 Oct 2015 00:00:00 -0400</pubDate>
+        <link>http://yourdomain.com/2015/10/30/first-post.html</link>
+        <guid isPermaLink="true">http://yourdomain.com/2015/10/30/first-post.html</guid>
+        
+        
+      </item>
+    
+  </channel>
+</rss>

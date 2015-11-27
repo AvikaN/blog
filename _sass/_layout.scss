@@ -1,0 +1,98 @@
+/**
+ * Site header
+ */
+
+/*New stuff*/
+
+/*Post*/
+.post-title
+{
+  text-align: center;
+  font: $base-font-family;
+  font-weight: 700;
+  color: #606060;
+  padding: 1em 0em 1em 0em;
+}
+
+.post-meta
+{
+  color: $text-color;
+}
+
+.pulse_sensor_viz
+{
+  text-align: center;
+}
+
+.projection-map
+{
+  text-align: center;
+}
+
+.work-title{
+  text-align: center;
+  color: $text-link-color;
+  padding: 0.08em;
+}
+/* Banner */
+ #banner{
+
+   background-position: center center;
+   background-size: auto 100%;
+   background-repeat: no-repeat;
+   text-align: center;
+ }
+
+ #banner header
+  {
+
+  }
+
+    #banner header h2
+    {
+      color: #fa9581;
+      font-weight: 700;
+    }
+
+    #banner header p
+    {
+      color: #d52349;
+      padding: 0;
+      font-style: normal;
+      margin: 0;
+    }
+
+
+ /* Wrapper */
+
+ #header-wrapper
+ {
+   position: relative;
+   background: #ffffff;
+   border-bottom: solid 1px #ccc;
+ }
+
+ /*Section Headers*/
+ .section-title
+ {
+   text-align: center;
+   color: $brand-color;
+   padding: 2em 0em 0em 0em;
+   font-size: 30px;
+   font-weight: 700;
+ }
+
+
+ .index-content{
+   text-align: left;
+   font-size: 20px;
+   color: black;
+ }
+
+ /*Index-style*/
+ .style-4u{
+   border-radius: 2px;
+   border: 1px solid $supporting-color;
+   padding: 0.5em 0.5em 0.5em 0.5em;
+   text-align: center;
+ }

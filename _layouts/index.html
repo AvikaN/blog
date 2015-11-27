@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<script src= '/js/jquery.min.js'></script>
+<html>
+  {% include head.html %}
+  {% include externals/styling.html %}
+
+  <body>
+
+    {% include header.html %}
+
+    <div class="page-content">
+      <div class="wrapper">
+        {{ content }}
+      </div>
+    </div>
+
+    {% include footer.html %} 
+
+  </body>
+</html>
