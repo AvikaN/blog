@@ -40,7 +40,7 @@ title: Hello, World!
 
 
     /*----Star----*/
-    d3.csv("/blog/extrastars.csv", function(error, dat){
+    d3.csv("extrastars.csv", type, function(error, dat){
 
       // create empty array
       var planet = [];
