@@ -1,9 +1,9 @@
-title: Avika Narula
+title: “Avika Narula’s Portfolio”
 email: avikanarula@nyu.edu
 description: portfolio site for my projects
 baseurl: /blog
 url: http://avikan.github.io/blog/
-github_username:AvikaN
+github_username: AvikaN
 
 # Build settings
 markdown: kramdown
