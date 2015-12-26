@@ -20,7 +20,7 @@ title:  Regularity + Randomness = Something Beautiful
 <p>I then thought projecting my heartbeat onto a 3D surface would create a very surreal experience. I used wooden cubes to create atypical surfaces and used projection mapping to project the sketches onto these surfaces. </p>
 
 <div class="projection-map"> <img align="center" src = "/blog/images/image-2.jpg" alt = "Projection Mapping - 1">
-<img align="middle" src = "/blog/images/image-3.jpg" alt = "Projection Mapping - 2"> </div>
+<img align="middle" src = "/blog/images/team.JPG" alt = "Projection Mapping - 2"> </div>
 
 <p> </p>
 
