@@ -5,8 +5,8 @@
     <description>portfolio site for my projects</description>
     <link>http://avikan.github.io/blog//blog/</link>
     <atom:link href="http://avikan.github.io/blog//blog/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Sat, 26 Dec 2015 05:59:06 -0500</pubDate>
-    <lastBuildDate>Sat, 26 Dec 2015 05:59:06 -0500</lastBuildDate>
+    <pubDate>Sat, 26 Dec 2015 06:04:49 -0500</pubDate>
+    <lastBuildDate>Sat, 26 Dec 2015 06:04:49 -0500</lastBuildDate>
     <generator>Jekyll v3.0.0</generator>
     
       <item>
@@ -947,8 +947,8 @@
 &lt;p&gt; &lt;/p&gt;
 &lt;p&gt;I then thought projecting my heartbeat onto a 3D surface would create a very surreal experience. I used wooden cubes to create atypical surfaces and used projection mapping to project the sketches onto these surfaces. &lt;/p&gt;
 
-&lt;div class=&quot;projection-map&quot;&gt; &lt;img align=&quot;center&quot; src=&quot;images/image-2.jpg&quot; alt=&quot;Projection Mapping - 1&quot; /&gt;
-&lt;img align=&quot;middle&quot; src=&quot;images/image-3.jpg&quot; alt=&quot;Projection Mapping - 2&quot; /&gt; &lt;/div&gt;
+&lt;div class=&quot;projection-map&quot;&gt; &lt;img align=&quot;center&quot; src=&quot;/images/image-2.jpg&quot; alt=&quot;Projection Mapping - 1&quot; /&gt;
+&lt;img align=&quot;middle&quot; src=&quot;/images/image-3.jpg&quot; alt=&quot;Projection Mapping - 2&quot; /&gt; &lt;/div&gt;
 
 &lt;p&gt; &lt;/p&gt;
 
