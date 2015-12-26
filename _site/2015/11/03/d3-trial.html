@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<script src= '/js/jquery.min.js'></script>
+<script src= '/blog/js/jquery.min.js'></script>
 <html>
   <head>
   <meta charset="utf-8">
@@ -9,9 +9,9 @@
   <title>Hello, World!</title>
   <meta name="description" content=" &emsp;&emsp;&emsp;&emsp;&emsp; Inspired by  XKCD's Exoplanet comic, here is a visualization of all the exoplanets and their stars to scale. The pink blob is...">
 
-  <link rel="stylesheet" href="/css/main.css">
-  <link rel="canonical" href="http://yourdomain.com/2015/11/03/d3-trial.html">
-  <link rel="alternate" type="application/rss+xml" title="AvikaN" href="http://yourdomain.com/feed.xml">
+  <link rel="stylesheet" href="/blog/css/main.css">
+  <link rel="canonical" href="http://avikan.github.io/blog//blog/2015/11/03/d3-trial.html">
+  <link rel="alternate" type="application/rss+xml" title="Avika’s" href="http://avikan.github.io/blog//blog/feed.xml">
 </head>
 
   <link href='http://fonts.googleapis.com/css?family=Lato:400,700' rel='stylesheet' type='text/css'>
@@ -25,15 +25,13 @@
     <div id="header-wrapper">
 
    <div id="header">
-      <!-- same header as index without the banner-->
      <div id ="nav-wrapper">
        <nav id="nav">
-         <!-- Nav -->
              <ul>
-                 <li><a href = "/index.html">Home</a></li>
-                 <li ><a href="/index.html#about">About</a><li>
-                 <li ><a href="/index.html#work">Work</a> </li>
-                 <li ><a href="/index.html#contact">Contact</a></li>
+                 <li><a href = "/blog/index.html">Home</a></li>
+                 <li ><a href="/blog/index.html#about">About</a><li>
+                 <li ><a href="/blog/index.html#work">Work</a> </li>
+                 <li ><a href="/blog/index.html#contact">Contact</a></li>
              </ul>
 
        </nav>
@@ -93,7 +91,7 @@
 
 
     /*----Star----*/
-    d3.csv("/extrastars.csv", type, function(error, dat){
+    d3.csv("/blog/extrastars.csv", type, function(error, dat){
 
       // create empty array
       var planet = [];

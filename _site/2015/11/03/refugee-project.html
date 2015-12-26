@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<script src= '/js/jquery.min.js'></script>
+<script src= '/blog/js/jquery.min.js'></script>
 <html>
   <head>
   <meta charset="utf-8">
@@ -9,9 +9,9 @@
   <title>Telling the Refugee Story</title>
   <meta name="description" content="  &emsp;&emsp;&emsp;&emsp;&emsp; Every day, all over the world, people flee their homes in fear of persecution because of their race, religion, political opi...">
 
-  <link rel="stylesheet" href="/css/main.css">
-  <link rel="canonical" href="http://yourdomain.com/2015/11/03/refugee-project.html">
-  <link rel="alternate" type="application/rss+xml" title="AvikaN" href="http://yourdomain.com/feed.xml">
+  <link rel="stylesheet" href="/blog/css/main.css">
+  <link rel="canonical" href="http://avikan.github.io/blog//blog/2015/11/03/refugee-project.html">
+  <link rel="alternate" type="application/rss+xml" title="Avika’s" href="http://avikan.github.io/blog//blog/feed.xml">
 </head>
 
   <link href='http://fonts.googleapis.com/css?family=Lato:400,700' rel='stylesheet' type='text/css'>
@@ -25,15 +25,13 @@
     <div id="header-wrapper">
 
    <div id="header">
-      <!-- same header as index without the banner-->
      <div id ="nav-wrapper">
        <nav id="nav">
-         <!-- Nav -->
              <ul>
-                 <li><a href = "/index.html">Home</a></li>
-                 <li ><a href="/index.html#about">About</a><li>
-                 <li ><a href="/index.html#work">Work</a> </li>
-                 <li ><a href="/index.html#contact">Contact</a></li>
+                 <li><a href = "/blog/index.html">Home</a></li>
+                 <li ><a href="/blog/index.html#about">About</a><li>
+                 <li ><a href="/blog/index.html#work">Work</a> </li>
+                 <li ><a href="/blog/index.html#contact">Contact</a></li>
              </ul>
 
        </nav>
@@ -172,8 +170,8 @@
         .startAngle(0)
         .endAngle(function(d) { return d.value * 2 * Math.PI;});
 
-   d3.csv("/causes.csv", function(error, stories){
-      d3.csv("/refugee5.csv", function(error, data){
+   d3.csv("/blog/causes.csv", function(error, stories){
+      d3.csv("/blog/refugee5.csv", function(error, data){
         var scale = d3.scale.linear()
               .domain([year,lastyear])
               .range([0,1]);

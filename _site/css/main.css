@@ -158,6 +158,15 @@ pre {
   color: #e9bc1b;
   padding: 0.08em; }
 
+.jelly_roll_video {
+  text-align: center; }
+
+.jelly_roll_sub {
+  color: #fa9581; }
+
+.team_pic {
+  text-align: center; }
+
 /* Banner */
 #banner {
   background-position: center center;

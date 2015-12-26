@@ -1,14 +1,55 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>AvikaN</title>
-    <description>Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.
-</description>
-    <link>http://yourdomain.com/</link>
-    <atom:link href="http://yourdomain.com/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Thu, 26 Nov 2015 15:54:43 -0500</pubDate>
-    <lastBuildDate>Thu, 26 Nov 2015 15:54:43 -0500</lastBuildDate>
+    <title>Avika’s</title>
+    <description>portfolio site for my projects</description>
+    <link>http://avikan.github.io/blog//blog/</link>
+    <atom:link href="http://avikan.github.io/blog//blog/feed.xml" rel="self" type="application/rss+xml"/>
+    <pubDate>Sat, 26 Dec 2015 05:09:08 -0500</pubDate>
+    <lastBuildDate>Sat, 26 Dec 2015 05:09:08 -0500</lastBuildDate>
     <generator>Jekyll v3.0.0</generator>
+    
+      <item>
+        <title>Jelly, Roll!</title>
+        <description>&lt;p&gt;
+	&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp;&amp;emsp; For our final interactive computing project, my teammates and I wanted to explore a novel interaction with the Leap Motion Sensor. 
+&lt;/p&gt;
+&lt;p&gt;
+	Jelly, Roll! is a smooth scroller game controlled by the Leap Motion Sensor. The player takes the blob on a magic carpet ride by moving his/her to control the height of the platform. The ultimate goal is to make it through all three levels without falling off the platform and successfully guide the Jelly to the hospital! 
+&lt;/p&gt;
+&lt;p&gt; &lt;/p&gt;
+&lt;p&gt; &lt;/p&gt;
+&lt;div class=&quot;jelly_roll_video&quot;&gt; 
+	&lt;iframe src=&quot;https://player.vimeo.com/video/150046743&quot; width=&quot;580&quot; height=&quot;300&quot; frameborder=&quot;0&quot; webkitallowfullscreen=&quot;&quot; mozallowfullscreen=&quot;&quot; allowfullscreen=&quot;&quot;&gt;&lt;/iframe&gt;
+&lt;/div&gt;
+&lt;p&gt; &lt;/p&gt;
+&lt;p class=&quot;jelly_roll_sub&quot;&gt;
+	The Leap
+&lt;/p&gt;
+&lt;p&gt; 
+	We imported and used the LeapMotion library by Michael Heuer with Processing. Through a trial and error process working with the Leap Motion, the hand gestures that made it to our game have motions that are tightly coupled with thier functionalities. This was a design choice that we have never previously had to consider when building interactive works with the mouse and keyboard. 
+&lt;/p&gt;
+&lt;p&gt;&lt;/p&gt;
+&lt;p class=&quot;jelly_roll_sub&quot;&gt;
+	fisica
+&lt;/p&gt;
+&lt;p&gt;
+	We used Fisica, a Processing library that provides wrappers for Box 2D functions, to power our game. This wrapper library eased our attempt to embed properties like gravity, collision detection, and geometry into the objects. 
+&lt;/p&gt;
+
+&lt;div class=&quot;team_pic&quot;&gt; 
+	&lt;img align=&quot;center&quot; src=&quot;/images/team.JPG&quot; alt=&quot;interactive-computing-team&quot; /&gt;
+&lt;/div&gt;
+
+&lt;p&gt;The team (from left to right): Corbin Lee, Adithep Narula, Avika Narula (and Katy Herrick, our photographer)&lt;/p&gt;
+
+</description>
+        <pubDate>Sat, 12 Dec 2015 00:00:00 -0500</pubDate>
+        <link>http://avikan.github.io/blog//blog/2015/12/12/jelly-roll.html</link>
+        <guid isPermaLink="true">http://avikan.github.io/blog//blog/2015/12/12/jelly-roll.html</guid>
+        
+        
+      </item>
     
       <item>
         <title>Telling the Refugee Story</title>
@@ -128,8 +169,8 @@
         .startAngle(0)
         .endAngle(function(d) { return d.value * 2 * Math.PI;});
 
-   d3.csv(&quot;/causes.csv&quot;, function(error, stories){
-      d3.csv(&quot;/refugee5.csv&quot;, function(error, data){
+   d3.csv(&quot;/blog/causes.csv&quot;, function(error, stories){
+      d3.csv(&quot;/blog/refugee5.csv&quot;, function(error, data){
         var scale = d3.scale.linear()
               .domain([year,lastyear])
               .range([0,1]);
@@ -624,8 +665,8 @@
 &lt;/p&gt;&lt;/p&gt;
 </description>
         <pubDate>Tue, 03 Nov 2015 00:00:00 -0500</pubDate>
-        <link>http://yourdomain.com/2015/11/03/refugee-project.html</link>
-        <guid isPermaLink="true">http://yourdomain.com/2015/11/03/refugee-project.html</guid>
+        <link>http://avikan.github.io/blog//blog/2015/11/03/refugee-project.html</link>
+        <guid isPermaLink="true">http://avikan.github.io/blog//blog/2015/11/03/refugee-project.html</guid>
         
         
       </item>
@@ -669,7 +710,7 @@
 
 
     /*----Star----*/
-    d3.csv(&quot;/extrastars.csv&quot;, type, function(error, dat){
+    d3.csv(&quot;/blog/extrastars.csv&quot;, type, function(error, dat){
 
       // create empty array
       var planet = [];
@@ -881,8 +922,8 @@
 
 </description>
         <pubDate>Tue, 03 Nov 2015 00:00:00 -0500</pubDate>
-        <link>http://yourdomain.com/2015/11/03/d3-trial.html</link>
-        <guid isPermaLink="true">http://yourdomain.com/2015/11/03/d3-trial.html</guid>
+        <link>http://avikan.github.io/blog//blog/2015/11/03/d3-trial.html</link>
+        <guid isPermaLink="true">http://avikan.github.io/blog//blog/2015/11/03/d3-trial.html</guid>
         
         
       </item>
@@ -907,7 +948,7 @@
 &lt;p&gt;I then thought projecting my heartbeat onto a 3D surface would create a very surreal experience. I used wooden cubes to create atypical surfaces and used projection mapping to project the sketches onto these surfaces. &lt;/p&gt;
 
 &lt;div class=&quot;projection-map&quot;&gt; &lt;img align=&quot;center&quot; src=&quot;/images/image-2.jpg&quot; alt=&quot;Projection Mapping - 1&quot; /&gt;
-&lt;img align=&quot;middle&quot; src=&quot;/images/image-3.jpg&quot; alt=&quot;Projection Mapping - 2&quot; /&gt; &lt;div&gt;
+&lt;img align=&quot;middle&quot; src=&quot;/images/image-3.jpg&quot; alt=&quot;Projection Mapping - 2&quot; /&gt; &lt;/div&gt;
 
 &lt;p&gt; &lt;/p&gt;
 
@@ -917,11 +958,10 @@
 
 &lt;/div&gt;
 &lt;p&gt; &lt;/p&gt;
-&lt;/div&gt;&lt;/div&gt;
 </description>
         <pubDate>Fri, 30 Oct 2015 00:00:00 -0400</pubDate>
-        <link>http://yourdomain.com/2015/10/30/first-post.html</link>
-        <guid isPermaLink="true">http://yourdomain.com/2015/10/30/first-post.html</guid>
+        <link>http://avikan.github.io/blog//blog/2015/10/30/first-post.html</link>
+        <guid isPermaLink="true">http://avikan.github.io/blog//blog/2015/10/30/first-post.html</guid>
         
         
       </item>
