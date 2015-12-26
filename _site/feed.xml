@@ -5,8 +5,8 @@
     <description>portfolio site for my projects</description>
     <link>http://avikan.github.io/blog//blog/</link>
     <atom:link href="http://avikan.github.io/blog//blog/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Sat, 26 Dec 2015 06:10:45 -0500</pubDate>
-    <lastBuildDate>Sat, 26 Dec 2015 06:10:45 -0500</lastBuildDate>
+    <pubDate>Sat, 26 Dec 2015 06:11:46 -0500</pubDate>
+    <lastBuildDate>Sat, 26 Dec 2015 06:11:46 -0500</lastBuildDate>
     <generator>Jekyll v3.0.0</generator>
     
       <item>
@@ -38,7 +38,7 @@
 &lt;/p&gt;
 
 &lt;div class=&quot;team_pic&quot;&gt; 
-	&lt;img align=&quot;center&quot; src=&quot;/images/team.JPG&quot; alt=&quot;interactive-computing-team&quot; /&gt;
+	&lt;img align=&quot;center&quot; src=&quot;images/team.JPG&quot; alt=&quot;interactive-computing-team&quot; /&gt;
 &lt;/div&gt;
 
 &lt;p&gt;The team (from left to right): Corbin Lee, Adithep Narula, Avika Narula (and Katy Herrick, our photographer)&lt;/p&gt;
