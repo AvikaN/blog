@@ -6,7 +6,7 @@ title:  Regularity + Randomness = Something Beautiful
 	&emsp;&emsp;&emsp;&emsp;&emsp; I based this project on the two opposing concepts of regularity and randomness. The randomness is composed of generative art and the periodic repetition comes from heartbeat. In these sketches there is randomness in movement, size, and color of the objects. Using the PulseSensor for the Arduino, these sketches recieve real-time pulse input. The pulse is then visualized through generative art.  
 </p>
 <p> </p>
-<p>  &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;  This first sketch was inspired by Matt Pearson's sketch in his book, Generative Art.</p>
+<p> This first sketch was inspired by Matt Pearson's sketch in his book, Generative Art.</p>
 <div class ="pulse_sensor_viz"> 
         <iframe src="https://player.vimeo.com/video/143106863" width="600" height="400" frameborder="0" webkitallowfullscreen  mozallowfullscreen allowfullscreen></iframe> 
 </div>
